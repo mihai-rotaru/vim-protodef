@@ -126,8 +126,6 @@ endfunction
 function! s:GetFunctionPrototypesForCurrentBuffer(opts)
     " FSReturnReadableCompanionFilename() is in the fswitch.vim plugin
     let companion = FSReturnReadableCompanionFilename('%')
-    echo 'companion ' . companion  
-
     let includeNS = 1
     if has_key(a:opts, 'includeNS')
         let includeNS = a:opts['includeNS']
