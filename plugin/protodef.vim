@@ -41,7 +41,11 @@ let g:protodef_ctags_flags = '--language-force=c++ --c++-kinds=+p-cdefglmnstuvx 
 
 " The path to the pullproto.pl script that's included as part of protodef
 if !exists('g:protodefprotogetter')
-    let g:protodefprotogetter = substitute($VIM, '\\', '/', 'g') . '/pullproto.pl'
+    if exists('g:plugins_folder')
+        let g:protodefprotogetter = g:plugins_folder . '\protodef\pullproto.pl'
+    else
+        let g:protodefprotogetter = substitute($VIM, '\\', '/', 'g') . '/pullproto.pl'
+    endif
 endif
 
 " This is a simple dictionary of default values that are set up for various data
@@ -122,6 +126,8 @@ endfunction
 function! s:GetFunctionPrototypesForCurrentBuffer(opts)
     " FSReturnReadableCompanionFilename() is in the fswitch.vim plugin
     let companion = FSReturnReadableCompanionFilename('%')
+    echo 'companion ' . companion  
+
     let includeNS = 1
     if has_key(a:opts, 'includeNS')
         let includeNS = a:opts['includeNS']
@@ -168,7 +174,7 @@ function! s:GetFunctionPrototypesForCurrentBuffer(opts)
         endfor
         " Make the call to the pullproto.pl script to get the full prototype
         " from the header file
-        let protos = system(g:protodefprotogetter . " " . companion, join(commands, "\n"))
+        let protos = system('perl ' . g:protodefprotogetter . " " . companion, join(commands, "\n"))
         " pullproto.pl separates the prototypes by '==' on its own line so
         " we'll split by that
         let ret = split(protos, "==\n")
